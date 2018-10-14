@@ -1,6 +1,11 @@
 package com.zh.server;
 
+import com.zh.codec.PacketDecoder;
+import com.zh.codec.PacketEncoder;
+import com.zh.codec.PacketEncoder2;
 import com.zh.course6.FirstServerHandler;
+import com.zh.server.handler.LoginRequestHandler;
+import com.zh.server.handler.MessageRequestHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -28,7 +33,12 @@ public class NettyServer {
                     @Override
                     protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
                         nioSocketChannel.pipeline()
-                                .addLast(new ServerHandler());
+                                .addLast(new PacketDecoder())
+                                .addLast(new PacketEncoder())  // 编解码器只能有一个，否则后面覆盖前面的
+//                                .addLast(new PacketEncoder2())
+                                .addLast(new LoginRequestHandler())
+                                .addLast(new MessageRequestHandler());
+
                     }
                 });
         bind(serverBootstrap, 8000);

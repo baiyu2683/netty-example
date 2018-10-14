@@ -1,5 +1,9 @@
 package com.zh.client;
 
+import com.zh.client.handler.LoginResponseHandler;
+import com.zh.client.handler.MessageResponseHandler;
+import com.zh.codec.PacketDecoder;
+import com.zh.codec.PacketEncoder;
 import com.zh.course6.FirstClientHandler;
 import com.zh.protocol.PacketCodec;
 import com.zh.protocol.request.MessageRequestPacket;
@@ -39,7 +43,12 @@ public class NettyClient {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) {
-                        socketChannel.pipeline().addLast(new ClientHandler());
+                        socketChannel
+                                .pipeline()
+                                .addLast(new PacketDecoder())
+                                .addLast(new LoginResponseHandler())
+                                .addLast(new MessageResponseHandler())
+                                .addLast(new PacketEncoder());
                     }
                 });
         connect(bootstrap, "127.0.0.1", 8000, MAX_RETRY);

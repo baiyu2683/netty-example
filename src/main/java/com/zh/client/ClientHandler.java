@@ -32,6 +32,8 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 
         // 写数据
         ctx.channel().writeAndFlush(buffer);
+
+        // 释放内存buffer
     }
 
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
