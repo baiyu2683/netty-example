@@ -4,6 +4,7 @@ import com.zh.client.handler.LoginResponseHandler;
 import com.zh.client.handler.MessageResponseHandler;
 import com.zh.codec.PacketDecoder;
 import com.zh.codec.PacketEncoder;
+import com.zh.codec.Spliter;
 import com.zh.course6.FirstClientHandler;
 import com.zh.protocol.PacketCodec;
 import com.zh.protocol.request.MessageRequestPacket;
@@ -18,6 +19,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
 import java.util.Date;
 import java.util.Scanner;
@@ -45,6 +47,8 @@ public class NettyClient {
                     protected void initChannel(SocketChannel socketChannel) {
                         socketChannel
                                 .pipeline()
+//                                .addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 7, 4))
+                                .addLast(new Spliter())
                                 .addLast(new PacketDecoder())
                                 .addLast(new LoginResponseHandler())
                                 .addLast(new MessageResponseHandler())
@@ -78,13 +82,16 @@ public class NettyClient {
             while (!Thread.interrupted()) {
                 if (LoginUtil.hasLogin(channel)) {
                     System.out.println("输入消息发送至服务端");
-                    Scanner scanner = new Scanner(System.in);
-                    String line = scanner.nextLine();
-
-                    MessageRequestPacket packet = new MessageRequestPacket();
-                    packet.setMessage(line);
-                    ByteBuf byteBuf = PacketCodec.INSTANCE.encode(channel.alloc(), packet);
-                    channel.writeAndFlush(byteBuf);
+//                    Scanner scanner = new Scanner(System.in);
+//                    String line = scanner.nextLine();
+                    for (int i = 0 ; i < 1000 ; i++) {
+                        MessageRequestPacket packet = new MessageRequestPacket();
+                        packet.setMessage("abcd");
+                        ByteBuf byteBuf = PacketCodec.INSTANCE.encode(channel.alloc(), packet);
+                        channel.writeAndFlush(byteBuf);
+                    }
+                    channel.close();
+                    break;
                 }
             }
         }).start();

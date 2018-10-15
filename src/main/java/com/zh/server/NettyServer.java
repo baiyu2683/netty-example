@@ -3,6 +3,7 @@ package com.zh.server;
 import com.zh.codec.PacketDecoder;
 import com.zh.codec.PacketEncoder;
 import com.zh.codec.PacketEncoder2;
+import com.zh.codec.Spliter;
 import com.zh.course6.FirstServerHandler;
 import com.zh.server.handler.LoginRequestHandler;
 import com.zh.server.handler.MessageRequestHandler;
@@ -11,6 +12,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
@@ -33,6 +35,8 @@ public class NettyServer {
                     @Override
                     protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
                         nioSocketChannel.pipeline()
+//                                .addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 7, 4))
+                                .addLast(new Spliter())
                                 .addLast(new PacketDecoder())
                                 .addLast(new PacketEncoder())  // 编解码器只能有一个，否则后面覆盖前面的
 //                                .addLast(new PacketEncoder2())

@@ -15,12 +15,14 @@ public class FirstClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         System.out.println(new Date() + ": 客户端写出数据");
+        // 发送1000次数据，服务端会出现数据包不完整的问题，就是粘包。。此时服务端需要拆包
+        for (int i = 0 ; i < 1000 ; i++) {
+            //1. 获取数据
+            ByteBuf buffer = getByteBuf(ctx);
 
-        //1. 获取数据
-        ByteBuf buffer = getByteBuf(ctx);
-
-        //2. 写数据
-        ctx.channel().writeAndFlush(buffer);
+            //2. 写数据
+            ctx.channel().writeAndFlush(buffer);
+        }
     }
 
     private ByteBuf getByteBuf(ChannelHandlerContext ctx) {

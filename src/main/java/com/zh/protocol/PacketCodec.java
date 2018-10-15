@@ -17,7 +17,7 @@ import static com.zh.protocol.command.Command.*;
  */
 public class PacketCodec {
 
-    private static final int MAGIC_NUMBER = 0x12345678;
+    public static final int MAGIC_NUMBER = 0x12345678;
 
     private static final Map<Byte, Class<? extends Packet>> packetTypeMap;
     private static final Map<Byte, Serializer> serializerMap;
@@ -42,12 +42,12 @@ public class PacketCodec {
         byte[] bytes = Serializer.DEFAULT.serialize(packet);
 
         // 3. 实际编码过程
-        byteBuf.writeInt(MAGIC_NUMBER);
-        byteBuf.writeByte(packet.getVersion());
-        byteBuf.writeByte(Serializer.DEFAULT.getSerializerAlogrithm());
-        byteBuf.writeByte(packet.getCommand());
-        byteBuf.writeInt(bytes.length);
-        byteBuf.writeBytes(bytes);
+        byteBuf.writeInt(MAGIC_NUMBER);  // 4字节
+        byteBuf.writeByte(packet.getVersion()); // 1字节
+        byteBuf.writeByte(Serializer.DEFAULT.getSerializerAlogrithm()); // 1字节
+        byteBuf.writeByte(packet.getCommand()); // 1字节
+        byteBuf.writeInt(bytes.length); // 4字节
+        byteBuf.writeBytes(bytes); // N字节
     }
 
     public ByteBuf encode(ByteBufAllocator byteBufAllocator, Packet packet) {
