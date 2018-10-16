@@ -1,15 +1,18 @@
 package com.zh.client;
 
 import com.zh.client.handler.LoginResponseHandler;
-import com.zh.client.handler.MessageResponseHandler;
 import com.zh.codec.PacketDecoder;
 import com.zh.codec.PacketEncoder;
 import com.zh.codec.Spliter;
 import com.zh.course6.FirstClientHandler;
+import com.zh.handler.MessageRequestHandler;
+import com.zh.handler.MessageResponseHandler;
 import com.zh.protocol.PacketCodec;
+import com.zh.protocol.request.LoginRequestPacket;
 import com.zh.protocol.request.MessageRequestPacket;
 import com.zh.protocol.response.MessageResponsePacket;
 import com.zh.util.LoginUtil;
+import com.zh.util.SessionUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -51,6 +54,7 @@ public class NettyClient {
                                 .addLast(new Spliter())
                                 .addLast(new PacketDecoder())
                                 .addLast(new LoginResponseHandler())
+                                .addLast(new MessageRequestHandler())
                                 .addLast(new MessageResponseHandler())
                                 .addLast(new PacketEncoder());
                     }
@@ -78,22 +82,35 @@ public class NettyClient {
     }
 
     private static void startConsoleThread(Channel channel) {
+        Scanner sc = new Scanner(System.in);
+        LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
+
         new Thread(() -> {
             while (!Thread.interrupted()) {
-//                if (LoginUtil.hasLogin(channel)) {
-                    System.out.println("输入消息发送至服务端");
-                    Scanner scanner = new Scanner(System.in);
-                    String line = scanner.nextLine();
-//                    for (int i = 0 ; i < 1000 ; i++) {
-                        MessageRequestPacket packet = new MessageRequestPacket();
-                        packet.setMessage(line);
-                        ByteBuf byteBuf = PacketCodec.INSTANCE.encode(channel.alloc(), packet);
-                        channel.writeAndFlush(byteBuf);
-//                    }
-//                    channel.close();
-//                    break;
-//                }
+                if (!SessionUtil.hasLogin(channel)) {
+                    System.out.println("输入用户名登录：");
+                    String username = sc.nextLine();
+                    loginRequestPacket.setUsername(username);
+
+                    loginRequestPacket.setPassword("pwd");
+
+                    //发送登录数据包
+                    channel.writeAndFlush(loginRequestPacket);
+                    waitForLoginResponse();
+                } else {
+                    String toUserId = sc.nextLine();
+                    String message = sc.nextLine();
+                    channel.writeAndFlush(new MessageRequestPacket(toUserId, message));
+                }
             }
         }).start();
+    }
+
+    private static void waitForLoginResponse() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

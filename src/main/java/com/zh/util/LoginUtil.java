@@ -7,6 +7,7 @@ import io.netty.util.Attribute;
 /**
  * @Author zh2683
  */
+@Deprecated
 public class LoginUtil {
 
     public static void markAsLogin(Channel channel) {
