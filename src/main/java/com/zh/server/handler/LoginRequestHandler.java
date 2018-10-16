@@ -3,6 +3,7 @@ package com.zh.server.handler;
 import com.zh.protocol.PacketCodec;
 import com.zh.protocol.request.LoginRequestPacket;
 import com.zh.protocol.response.LoginResponsePacket;
+import com.zh.util.LoginUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -24,6 +25,8 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
             // 校验成功
             System.out.println("客户端登录成功!");
             loginResponsePacket.setSuccess(true);
+            // 标记当前链接已经登陆过了
+            LoginUtil.markAsLogin(ctx.channel());
         } else {
             // 校验失败
             System.out.println("客户端登录失败!");

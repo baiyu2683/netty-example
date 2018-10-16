@@ -80,19 +80,19 @@ public class NettyClient {
     private static void startConsoleThread(Channel channel) {
         new Thread(() -> {
             while (!Thread.interrupted()) {
-                if (LoginUtil.hasLogin(channel)) {
+//                if (LoginUtil.hasLogin(channel)) {
                     System.out.println("输入消息发送至服务端");
                     Scanner scanner = new Scanner(System.in);
                     String line = scanner.nextLine();
 //                    for (int i = 0 ; i < 1000 ; i++) {
                         MessageRequestPacket packet = new MessageRequestPacket();
-                        packet.setMessage("abcd");
+                        packet.setMessage(line);
                         ByteBuf byteBuf = PacketCodec.INSTANCE.encode(channel.alloc(), packet);
                         channel.writeAndFlush(byteBuf);
 //                    }
 //                    channel.close();
 //                    break;
-                }
+//                }
             }
         }).start();
     }

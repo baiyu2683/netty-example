@@ -18,19 +18,15 @@ public class LoginResponseHandler extends SimpleChannelInboundHandler<LoginRespo
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        System.out.println(new Date() + ": 客户端开始登录");
-
+//        System.out.println(new Date() + ": 客户端开始登录");
+//
         // 创建登录对象
         LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
         loginRequestPacket.setUserId((int)Math.floor(Math.random() * 10));
-        loginRequestPacket.setUsername("flash");
+        loginRequestPacket.setUsername("zh");
         loginRequestPacket.setPassword("pwd");
-
-        //编码
-//        ByteBuf buffer = PacketCodec.INSTANCE.encode(ctx.alloc(), loginRequestPacket);
-
-        // 写数据
-        ctx.channel().writeAndFlush(loginRequestPacket);
+//        // 写数据
+//        ctx.channel().writeAndFlush(loginRequestPacket);
     }
 
     @Override
@@ -59,5 +55,10 @@ public class LoginResponseHandler extends SimpleChannelInboundHandler<LoginRespo
         buffer.writeBytes(bytes);
 
         return buffer;
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) {
+        System.out.println("客户端链接被关闭");
     }
 }

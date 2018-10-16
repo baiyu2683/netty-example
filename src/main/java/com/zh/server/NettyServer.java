@@ -5,6 +5,7 @@ import com.zh.codec.PacketEncoder;
 import com.zh.codec.PacketEncoder2;
 import com.zh.codec.Spliter;
 import com.zh.course6.FirstServerHandler;
+import com.zh.server.handler.AuthHandler;
 import com.zh.server.handler.LifeCycleTestHandler;
 import com.zh.server.handler.LoginRequestHandler;
 import com.zh.server.handler.MessageRequestHandler;
@@ -43,6 +44,7 @@ public class NettyServer {
                                 .addLast(new PacketEncoder())  // 编解码器只能有一个，否则后面覆盖前面的
 //                                .addLast(new PacketEncoder2())
                                 .addLast(new LoginRequestHandler())
+                                .addLast(new AuthHandler()) // 用户身份验证
                                 .addLast(new MessageRequestHandler());
 
                     }
