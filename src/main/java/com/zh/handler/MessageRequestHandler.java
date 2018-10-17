@@ -5,13 +5,18 @@ import com.zh.protocol.response.MessageResponsePacket;
 import com.zh.session.Session;
 import com.zh.util.SessionUtil;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 /**
  * @Author zh2683
  */
+@ChannelHandler.Sharable
 public class MessageRequestHandler extends SimpleChannelInboundHandler<MessageRequestPacket> {
+
+    public static final MessageRequestHandler INSTANCE = new MessageRequestHandler();
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, MessageRequestPacket msg) throws Exception {
         // 1. 拿到发送方的会话信息

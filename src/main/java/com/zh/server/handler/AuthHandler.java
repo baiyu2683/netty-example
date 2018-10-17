@@ -2,6 +2,7 @@ package com.zh.server.handler;
 
 import com.zh.util.LoginUtil;
 import com.zh.util.SessionUtil;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -9,7 +10,10 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  * 身份认证
  * @Author zh2683
  */
+@ChannelHandler.Sharable
 public class AuthHandler extends ChannelInboundHandlerAdapter {
+
+    public static final AuthHandler INSTANCE = new AuthHandler();
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {

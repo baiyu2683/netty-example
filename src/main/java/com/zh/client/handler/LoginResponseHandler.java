@@ -1,12 +1,10 @@
 package com.zh.client.handler;
 
-import com.zh.protocol.PacketCodec;
-import com.zh.protocol.request.LoginRequestPacket;
 import com.zh.protocol.response.LoginResponsePacket;
 import com.zh.session.Session;
-import com.zh.util.LoginUtil;
 import com.zh.util.SessionUtil;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -16,7 +14,10 @@ import java.util.Date;
 /**
  * @Author zh2683
  */
+@ChannelHandler.Sharable
 public class LoginResponseHandler extends SimpleChannelInboundHandler<LoginResponsePacket> {
+
+    public static final LoginResponseHandler INSTANCE = new LoginResponseHandler();
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {

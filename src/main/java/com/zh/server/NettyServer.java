@@ -44,10 +44,10 @@ public class NettyServer {
                                 .addLast(new PacketDecoder())
                                 .addLast(new PacketEncoder())  // 编解码器只能有一个，否则后面覆盖前面的
 //                                .addLast(new PacketEncoder2())
-                                .addLast(new LoginRequestHandler())
-                                .addLast(new AuthHandler()) // 用户身份验证
-                                .addLast(new MessageRequestHandler())
-                                .addLast(new MessageResponseHandler());
+                                .addLast(LoginRequestHandler.INSTANCE)
+                                .addLast(AuthHandler.INSTANCE) // 用户身份验证
+                                .addLast(MessageRequestHandler.INSTANCE)
+                                .addLast(MessageResponseHandler.INSTANCE);
 
                     }
                 });

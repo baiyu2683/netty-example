@@ -53,9 +53,9 @@ public class NettyClient {
 //                                .addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 7, 4))
                                 .addLast(new Spliter())
                                 .addLast(new PacketDecoder())
-                                .addLast(new LoginResponseHandler())
-                                .addLast(new MessageRequestHandler())
-                                .addLast(new MessageResponseHandler())
+                                .addLast(LoginResponseHandler.INSTANCE)
+                                .addLast(MessageRequestHandler.INSTANCE)
+                                .addLast(MessageResponseHandler.INSTANCE)
                                 .addLast(new PacketEncoder());
                     }
                 });

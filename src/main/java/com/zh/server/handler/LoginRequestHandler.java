@@ -1,12 +1,10 @@
 package com.zh.server.handler;
 
-import com.zh.protocol.PacketCodec;
 import com.zh.protocol.request.LoginRequestPacket;
 import com.zh.protocol.response.LoginResponsePacket;
 import com.zh.session.Session;
-import com.zh.util.LoginUtil;
 import com.zh.util.SessionUtil;
-import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -16,7 +14,11 @@ import java.util.UUID;
 /**
  * @Author zh2683
  */
+@ChannelHandler.Sharable
 public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginRequestPacket> {
+
+    public static final LoginRequestHandler INSTANCE = new LoginRequestHandler();
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, LoginRequestPacket loginRequestPacket) throws Exception {
 //        System.out.println(new Date() + ": 收到客户端登录请求……");
