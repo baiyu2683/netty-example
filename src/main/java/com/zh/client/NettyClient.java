@@ -1,5 +1,6 @@
 package com.zh.client;
 
+import com.zh.client.handler.HeartBeatTimerHandler;
 import com.zh.client.handler.LoginResponseHandler;
 import com.zh.codec.PacketDecoder;
 import com.zh.codec.PacketEncoder;
@@ -11,6 +12,7 @@ import com.zh.protocol.PacketCodec;
 import com.zh.protocol.request.LoginRequestPacket;
 import com.zh.protocol.request.MessageRequestPacket;
 import com.zh.protocol.response.MessageResponsePacket;
+import com.zh.server.handler.IMIdleStateHandler;
 import com.zh.util.LoginUtil;
 import com.zh.util.SessionUtil;
 import io.netty.bootstrap.Bootstrap;
@@ -51,12 +53,16 @@ public class NettyClient {
                         socketChannel
                                 .pipeline()
 //                                .addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 7, 4))
+                                .addLast(new IMIdleStateHandler())
                                 .addLast(new Spliter())
                                 .addLast(new PacketDecoder())
-                                .addLast(LoginResponseHandler.INSTANCE)
-                                .addLast(MessageRequestHandler.INSTANCE)
-                                .addLast(MessageResponseHandler.INSTANCE)
-                                .addLast(new PacketEncoder());
+//                                .addLast(new LoginResponseHandler())
+//                                .addLast(new MessageRequestHandler())
+//                                .addLast(new MessageResponseHandler())
+                                .addLast(new PacketEncoder())
+                                // TODO 这里有bug,加上上面的处理器,启用下面的startConsoleThread和服务端的个handler后,
+                                // 心跳处理器无法触发, 所学尚浅,还不知道原因
+                                .addLast(new HeartBeatTimerHandler());
                     }
                 });
         connect(bootstrap, "127.0.0.1", 8000, MAX_RETRY);
@@ -66,9 +72,9 @@ public class NettyClient {
         bootstrap.connect(host, port).addListener(future -> {
             if (future.isSuccess()) {
                 System.out.println("连接成功!");
-                Channel channel = ((ChannelFuture) future).channel();
+//                Channel channel = ((ChannelFuture) future).channel();
                 // 启动控制台线程
-                startConsoleThread(channel);
+//                startConsoleThread(channel);
             } else if (retry == 0) {
                 System.err.println("重试次数已用完，放弃连接！");
             } else {

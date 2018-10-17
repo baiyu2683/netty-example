@@ -2,20 +2,18 @@ package com.zh.server;
 
 import com.zh.codec.PacketDecoder;
 import com.zh.codec.PacketEncoder;
-import com.zh.codec.PacketEncoder2;
 import com.zh.codec.Spliter;
-import com.zh.course6.FirstServerHandler;
 import com.zh.handler.MessageRequestHandler;
 import com.zh.handler.MessageResponseHandler;
 import com.zh.server.handler.AuthHandler;
-import com.zh.server.handler.LifeCycleTestHandler;
+import com.zh.server.handler.HeartBeatRequestHandler;
+import com.zh.server.handler.IMIdleStateHandler;
 import com.zh.server.handler.LoginRequestHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
@@ -40,14 +38,16 @@ public class NettyServer {
                         nioSocketChannel.pipeline()
 //                                .addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 7, 4))
 //                                .addLast(new LifeCycleTestHandler()) // 测试handler生命周期
+                                .addLast(new IMIdleStateHandler())
                                 .addLast(new Spliter())
                                 .addLast(new PacketDecoder())
                                 .addLast(new PacketEncoder())  // 编解码器只能有一个，否则后面覆盖前面的
 //                                .addLast(new PacketEncoder2())
-                                .addLast(LoginRequestHandler.INSTANCE)
-                                .addLast(AuthHandler.INSTANCE) // 用户身份验证
-                                .addLast(MessageRequestHandler.INSTANCE)
-                                .addLast(MessageResponseHandler.INSTANCE);
+//                                .addLast(LoginRequestHandler.INSTANCE)
+//                                .addLast(AuthHandler.INSTANCE) // 用户身份验证
+//                                .addLast(MessageRequestHandler.INSTANCE)
+//                                .addLast(MessageResponseHandler.INSTANCE)
+                                .addLast(HeartBeatRequestHandler.INSTANCE);
 
                     }
                 });

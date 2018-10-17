@@ -1,7 +1,9 @@
 package com.zh.protocol;
 
+import com.zh.protocol.request.HeartBeatRequestPacket;
 import com.zh.protocol.request.LoginRequestPacket;
 import com.zh.protocol.request.MessageRequestPacket;
+import com.zh.protocol.response.HeartBeatResponsePacket;
 import com.zh.protocol.response.LoginResponsePacket;
 import com.zh.protocol.response.MessageResponsePacket;
 import io.netty.buffer.ByteBuf;
@@ -29,6 +31,8 @@ public class PacketCodec {
         packetTypeMap.put(LOGIN_RESPONSE, LoginResponsePacket.class);
         packetTypeMap.put(MESSAGE_REQUEST, MessageRequestPacket.class);
         packetTypeMap.put(MESSAGE_RESPONSE, MessageResponsePacket.class);
+        packetTypeMap.put(HEARTBEAT_REQUEST, HeartBeatRequestPacket.class);
+        packetTypeMap.put(HEARTBEAT_RESPONSE, HeartBeatResponsePacket.class);
 
         serializerMap = new HashMap<>();
         Serializer serializer = new JSONSerializer();
